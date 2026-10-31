@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Shop meals, café and bakery items, groceries and live farm animals on NaijaBites">
+  <title>NaijaBites | Food, Groceries & Livestock Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand-side"><button class="hamburger" id="menuToggle" aria-label="Open menu">☰</button><a class="brand"
+        href="index.html"><span>👨🏾‍🍳</span><span><b>Naija<span>Bites</span></b><small>Good Food · Great People ·
+            Happy Food</small></span></a></div>
+
+    <div class="top-actions">
+      <button class="signin" id="signInButton">
+        ♟ &nbsp; Sign In
+      </button>
+
+      <!-- <button class="round" id="profileButton"
+    aria-label="Profile" hidden>
+    ♙
+  </button> -->
+
+      <button class="round" id="profileButton" hidden>
+        <span id="profileName"></span>
+        <span aria-hidden="true">♙</span>
+      </button>
+
+      <button class="round cart-icon" id="cartButton" aria-label="Cart">
+        🛒<i id="cartCount">0</i>
+      </button>
+    </div>
+    <nav class="menu" id="menuPopover" hidden><a href="about.html">ⓘ &nbsp; About Us</a><button id="supportButton">☏
+        &nbsp; Chat with Support</button></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">YOUR LOCAL MARKETPLACE</p>
+        <h1>Food, Farm Goods &amp; <span>Livestock</span></h1>
+        <p>Discover cafés, bakeries, fast food, restaurant menus, groceries and live farm animals.<br>Shop local vendors
+          and farms in one place.</p>
+        <form id="searchForm" class="search"><span>⌕</span><input id="searchInput" type="search"
+            placeholder="Search products, vendors or categories..." aria-label="Search"><button>Search</button></form>
+      </div>
+      <div class="hero-note">Authentic<br>African Taste <span>〰</span></div>
+    </section>
+    <section class="market-strip">
+      <div class="market-time"><span class="sun" id="timeIcon">☀</span>
+        <div><b>Today's Market</b>
+          <p><strong id="marketTimeName">Lunch</strong> <span id="marketHours">(12 PM – 3 PM)</span></p>
+        </div><select id="marketSelect" aria-label="Choose market">
+          <option value="auto">Suggested now</option>
+          <option value="breakfast">Cafés &amp; Bakeries</option>
+          <option value="lunch">Fast Food</option>
+          <option value="dinner">Dining</option>
+          <option value="buka">Buka (Mama Put)</option>
+          <option value="groceries">Groceries</option>
+          <option value="livestock">Livestock</option>
+        </select>
+      </div>
+      <div class="category-tabs"><button class="category active" data-market="breakfast"
+          aria-pressed="true"><span>☕</span><b>Cafés &amp; Bakeries<small>Coffee, bread, cakes &amp;
+              pastries</small></b></button><button class="category" data-market="lunch"
+          aria-pressed="false"><span>🍔</span><b>Fast Food<small>Burgers, shawarma, pizza &amp;
+              more</small></b></button><button class="category" data-market="dinner"
+          aria-pressed="false"><span>🍽️</span><b>Dining<small>Restaurant meals &amp; menus</small></b></button></div>
+      <div class="other-markets"><b>Other Markets</b>
+        <div><button data-market="buka" aria-pressed="false">🏠 <span>Buka<br>(Mama Put)</span></button><button
+            data-market="groceries" aria-pressed="false">🛒 <span>Groceries</span></button><button
+            data-market="livestock" aria-pressed="false">🐄 <span>Livestock<br>Live animals</span></button></div>
+      </div>
+    </section>
+    <div class="content-layout">
+      <section class="meal-section">
+        <div class="section-heading">
+          <div>
+            <h2 id="mealHeading">Popular Meals Near You</h2>
+            <p>⌖ &nbsp; Local vendors and products</p>
+          </div><button id="viewAll">View All ›</button>
+        </div>
+        <div class="meal-grid" id="mealGrid"></div>
+        <p id="emptyState" hidden>No items found in this category. Try another search.</p>
+      </section>
+      <aside class="sidebar">
+        <section class="support-card">
+          <div>
+            <h3>Support Local<br>Vendors</h3>
+            <p>Real food. Real people.<br>Stronger communities.</p><button id="exploreMarkets"
+              onclick="setMarket('all')">Explore All Markets</button>
+          </div><span>🏪</span>
+        </section>
+        <section class="quick-links" id="quickLinksSection">
+          <h3>Quick Links</h3><button data-notice="My Orders">▣ <span><b>My Orders</b><small>View your order
+                history</small></span> ›</button><button data-notice="My Reservations">▦ <span><b>My
+                Reservations</b><small>View your table bookings</small></span> ›</button><button id="myCartLink">🛒
+            <span><b>My Cart</b><small>View items in your cart</small></span> ›</button><button
+            data-notice="Help & Support">? <span><b>Help &amp; Support</b><small>Get assistance</small></span>
+            ›</button>
+        </section>
+        <section class="service-card">
+          <h3>Delivery &amp; Service</h3>
+          <div><span>🚚<small>Fast &amp; Reliable</small></span><span>🥬<small>Fresh Food &amp; Farm
+                Goods</small></span><span>🏪<small>Local Vendors</small></span></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <footer id="footer" class="footer">
+    <div><b>♜ &nbsp; 1000+</b><small>Local Vendors</small></div>
+    <div><b>◉ &nbsp; 50+</b><small>Food Categories</small></div>
+    <div><b>🚚 &nbsp; Fast Delivery</b><small>To Your Doorstep</small></div>
+    <div><b>✿ &nbsp; 24/7</b><small>Food Community Support</small></div><em>Good Food Brings<br>People Together</em>
+  </footer>
+  <button class="community-fab" id="communityButton" aria-label="Food Community">☏ <b>Food Community</b><i></i></button>
+  <dialog id="signInModal" class="modal">
+    <form method="dialog" class="close-row"><button>×</button></form>
+    <div class="modal-body">
+      <p class="eyebrow">WELCOME BACK</p>
+      <h2>Sign in to NaijaBites</h2>
+      <p>Manage your cart, orders and profile.</p>
+      <form id="signInForm"><label>Email address</label><input type="email" required
+          placeholder="you@example.com"><label>Password</label><input type="password" required minlength="6"
+          placeholder="Enter password">
+        <p id="signInMessage" class="message"></p><button class="primary">Sign In</button>
+      </form>
+      <p>New to NaijaBites? <button class="text-button" id="signUpLink">Sign up</button></p><small>Demo only; this form
+        does not connect to a real account service.</small>
+    </div>
+  </dialog>
+  <dialog id="cartModal" class="modal">
+    <form method="dialog" class="close-row"><button>×</button></form>
+    <div class="modal-body">
+      <p class="eyebrow">YOUR ORDER</p>
+      <h2>Your Cart</h2>
+      <div id="cartItems"></div>
+      <section class="delivery-location-box" aria-labelledby="cartDeliveryTitle">
+        <p class="eyebrow">DELIVERY ADDRESS</p>
+        <h3 id="cartDeliveryTitle">Where should we deliver?</h3>
+        <p class="delivery-autofill-prompt"><span aria-hidden="true">⌖</span><a href="#"
+            id="useCurrentLocation">Autofill delivery address</a></p><label for="deliveryHouseNumber">House / building
+          number <span aria-hidden="true">*</span></label><input id="deliveryHouseNumber" type="text"
+          autocomplete="address-line1" placeholder="e.g. 14B" maxlength="40" required><label
+          for="cartDeliveryInput">Street name <span aria-hidden="true">*</span></label>
+        <div class="delivery-address-entry"><input id="cartDeliveryInput" type="text" autocomplete="address-line2"
+            placeholder="e.g. Admiralty Way" maxlength="160" aria-autocomplete="list"
+            aria-controls="deliveryAddressSuggestions" aria-expanded="false">
+          <div id="deliveryAddressSuggestions" class="delivery-address-suggestions" role="listbox" hidden></div>
+        </div><label for="deliveryArea">Estate / area / neighbourhood <span aria-hidden="true">*</span></label><input
+          id="deliveryArea" type="text" autocomplete="address-level3" placeholder="e.g. Lekki Phase 1" maxlength="160"
+          required><label for="deliveryLandmark">Nearby landmark (recommended)</label><input id="deliveryLandmark"
+          type="text" placeholder="e.g. opposite the filling station" maxlength="160">
+        <div class="delivery-location-actions"><button type="button" class="primary" id="saveDeliveryAddress">Use This
+            Address</button></div>
+        <p id="deliveryLocationMessage" class="delivery-location-message" role="status"></p>
+        <div id="confirmedDeliveryAddressBox" class="confirmed-delivery-address" hidden>
+          <p class="eyebrow">FINAL ADDRESS REVIEW</p><strong id="confirmedDeliveryAddressText"></strong>
+          <p>Please check this is the exact address you want us to deliver to before proceeding.</p>
+        </div>
+      </section>
+      <div class="cart-total"><span>Subtotal</span><b id="cartSubtotal">₦0</b></div><button id="checkoutButton"
+        class="primary">Proceed to Order</button><small>Demo only. No payment will be taken.</small>
+    </div>
+  </dialog>
+
+  <dialog id="profileModal" class="modal">
+    <form method="dialog" class="close-row">
+      <button aria-label="Close">×</button>
+    </form>
+
+    <div class="modal-body">
+      <p class="eyebrow">YOUR ACCOUNT</p>
+      <h2>My Profile</h2>
+
+      <p><strong>Name:</strong> <span id="profileName">Customer</span></p>
+      <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+
+      <button class="primary" id="signOutButton" type="button">
+        Sign Out
+      </button>
+    </div>
+  </dialog>
+  <dialog id="mealModal" class="modal">
+    <form method="dialog" class="close-row"><button>×</button></form>
+    <div class="modal-body" id="mealDetails"></div>
+  </dialog>
+  <dialog id="noticeModal" class="modal">
+    <form method="dialog" class="close-row"><button>×</button></form>
+    <div class="modal-body">
+      <p class="eyebrow">NAIJABITES</p>
+      <h2 id="noticeTitle">Coming soon</h2>
+      <p id="noticeText"></p><button class="primary" id="noticeOk">Okay</button>
+    </div>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+</body>
+
+</html>

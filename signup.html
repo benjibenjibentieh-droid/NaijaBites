@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#174c38">
+  <title>Create your NaijaBites account</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="signup.css">
+</head>
+
+<body class="signup-page">
+  <header class="signup-header">
+    <a class="signup-brand" href="index.html" aria-label="NaijaBites home"><span
+        class="brand-mark">N</span><span>Naija<span class="brand-accent">Bites</span></span></a>
+    <a class="back-home" href="index.html">← Back to marketplace</a>
+  </header>
+
+  <main class="signup-layout">
+    <section class="signup-intro">
+      <p class="eyebrow">GOOD FOOD. GOOD PEOPLE.</p>
+      <h1>Your next favourite meal is closer than you think.</h1>
+      <p>Create an account to keep your food discoveries, cart and orders together.</p>
+      <div class="signup-benefits">
+        <p><span>✓</span> Explore local food spots</p>
+        <p><span>✓</span> Keep track of your cart</p>
+        <p><span>✓</span> Join the NaijaBites food community</p>
+      </div>
+      <div class="signup-art" aria-hidden="true"><span>🍲</span><span>🥐</span><span>🍛</span></div>
+    </section>
+
+    <section class="signup-card">
+      <p class="eyebrow">JOIN NAIJABITES</p>
+      <h2>Create your account</h2>
+      <p class="signup-subtitle">It only takes a minute.</p>
+      <form id="signupForm" novalidate>
+        <div class="field">
+          <label for="fullName">Full name</label>
+          <input id="fullName" name="fullName" autocomplete="name" placeholder="e.g. Ada Okafor" required
+            maxlength="80">
+          <small class="field-error" id="nameError"></small>
+        </div>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          <small class="field-error" id="emailError"></small>
+        </div>
+        <div class="field">
+          <label for="phone">Phone number <span class="optional">(optional)</span></label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+234 800 000 0000">
+          <small class="field-error" id="phoneError"></small>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="password-wrap">
+            <input id="password" name="password" type="password" autocomplete="new-password"
+              placeholder="Create a strong password" required>
+            <button class="show-password" type="button" data-toggle="password" aria-label="Show password">Show</button>
+          </div>
+          <small class="hint">Use 8+ characters with uppercase, lowercase, a number and a symbol.</small>
+          <small class="field-error" id="passwordError"></small>
+        </div>
+        <div class="field">
+          <label for="confirmPassword">Confirm password</label>
+          <div class="password-wrap">
+            <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password"
+              placeholder="Enter your password again" required>
+            <button class="show-password" type="button" data-toggle="confirmPassword"
+              aria-label="Show confirmation password">Show</button>
+          </div>
+          <small class="field-error" id="confirmError"></small>
+        </div>
+        <p class="form-message" id="formMessage" role="status" aria-live="polite"></p>
+        <button class="signup-submit" id="signupSubmit" type="submit">Create account <span>→</span></button>
+        <p class="terms-note">Your account details are stored securely in the NaijaBites database.</p>
+      </form>
+      <p class="signin-prompt">Already have an account? <a href="index.html?signin=1">Sign in</a></p>
+    </section>
+  </main>
+  <footer class="signup-footer">© <span id="year"></span> NaijaBites · A university project demo</footer>
+  <script src="signup.js"></script>
+</body>
+
+</html>

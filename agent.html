@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NaijaBites | Agent Operations</title>
+  <link rel="stylesheet" href="agent.css">
+</head>
+
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="index.html"><span class="brand-mark">N</span><span>Naija<span
+          class="brand-accent">Bites</span><small>AGENT WORKSPACE</small></span></a>
+    <div class="agent-card">
+      <div class="avatar">NB</div>
+      <div><strong>Operations Agent</strong><small>Demo staff account</small></div>
+    </div>
+    <nav id="sideNav" aria-label="Dashboard sections">
+      <button class="nav-link active" data-view="overview">▦ <span>Overview</span></button>
+      <button class="nav-link" data-view="vendors">♧ <span>Vendor applications</span><b id="vendorBadge">0</b></button>
+      <button class="nav-link" data-view="meals">🍲 <span>Meals & categories</span></button>
+      <button class="nav-link" data-view="orders">▤ <span>Orders</span><b id="orderBadge">0</b></button>
+      <button class="nav-link" data-view="reservations">▣ <span>Reservations</span></button>
+      <button class="nav-link" data-view="support">♡ <span>Customer support</span><b id="supportBadge">0</b></button>
+      <button class="nav-link" data-view="community">☷ <span>Community moderation</span></button>
+    </nav>
+    <div class="sidebar-bottom"><a href="index.html">← Back to customer site</a>
+      <p>NaijaBites Agent Tools<br><small>Frontend demo only</small></p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">MARKETPLACE OPERATIONS</p>
+        <h1 id="pageTitle">Overview</h1>
+        <p class="muted" id="pageSubtitle">Your daily snapshot of the NaijaBites marketplace.</p>
+      </div>
+      <div class="top-actions"><span class="demo-pill"><i></i> Demo mode</span><button class="btn btn-light"
+          id="refreshBtn">↻ Refresh</button></div>
+    </header>
+
+    <div class="notice"><strong>Demo workspace:</strong> data is stored in this browser only. This page has no real
+      login, backend, or security controls.</div>
+
+    <section class="view active" id="view-overview">
+      <div class="welcome">
+        <div>
+          <p class="eyebrow">AGENT CONTROL CENTRE</p>
+          <h2>Good work starts with a clear view.</h2>
+          <p>Review pending activity and keep the marketplace running smoothly.</p>
+        </div>
+        <div class="welcome-icon">🍛</div>
+      </div>
+      <div class="stats-grid">
+        <article class="stat-card"><span class="stat-icon orange">♧</span><span class="stat-label">Vendor
+            profiles</span><strong id="statVendors">0</strong><small>Registered in this browser</small></article>
+        <article class="stat-card"><span class="stat-icon blue">▤</span><span class="stat-label">Orders</span><strong
+            id="statOrders">0</strong><small id="statPendingOrders">0 pending</small></article>
+        <article class="stat-card"><span class="stat-icon purple">▣</span><span
+            class="stat-label">Reservations</span><strong id="statReservations">0</strong><small>Bookings
+            recorded</small></article>
+        <article class="stat-card"><span class="stat-icon green">♡</span><span class="stat-label">Support
+            requests</span><strong id="statSupport">0</strong><small>Demo messages</small></article>
+      </div>
+      <div class="content-grid">
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <h3>Needs attention</h3>
+              <p>Items that may need an agent's review.</p>
+            </div>
+          </div>
+          <div id="attentionList" class="attention-list"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <h3>Quick actions</h3>
+              <p>Jump to a common task.</p>
+            </div>
+          </div>
+          <div class="quick-actions">
+            <button data-go="vendors">Review vendor applications <span>→</span></button>
+            <button data-go="orders">Check recent orders <span>→</span></button>
+            <button data-go="support">Open customer support <span>→</span></button>
+            <button data-go="community">Moderate community posts <span>→</span></button>
+          </div>
+        </article>
+      </div>
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <h3>Recent orders</h3>
+            <p>Latest orders available in this browser.</p>
+          </div><button class="text-button" data-go="orders">View all →</button>
+        </div>
+        <div id="recentOrders"></div>
+      </article>
+    </section>
+
+    <section class="view" id="view-vendors">
+      <div class="section-toolbar">
+        <div>
+          <h2>Vendor applications</h2>
+          <p>Review vendor profiles and change their demo approval status.</p>
+        </div>
+        <div class="toolbar-actions"><input id="vendorSearch" placeholder="Search vendors…"
+            aria-label="Search vendors"><button class="btn btn-primary" id="addVendorBtn">+ Add vendor</button></div>
+      </div>
+      <div class="filter-row"><button class="filter active" data-filter="all">All</button><button class="filter"
+          data-filter="Pending">Pending</button><button class="filter" data-filter="Approved">Approved</button><button
+          class="filter" data-filter="Rejected">Rejected</button></div>
+      <div id="vendorsContent"></div>
+    </section>
+
+    <section class="view" id="view-meals">
+      <div class="section-toolbar">
+        <div>
+          <h2>Meals & categories</h2>
+          <p>Maintain the demo catalogue shown on the marketplace.</p>
+        </div><button class="btn btn-primary" id="addMealBtn">+ Add meal</button>
+      </div>
+      <div class="form-panel" id="mealFormPanel" hidden>
+        <h3 id="mealFormTitle">Add a meal</h3>
+        <form id="mealForm" class="form-grid">
+          <label>Meal name<input name="name" required placeholder="e.g. Jollof Rice & Chicken"></label>
+          <label>Vendor<input name="vendor" required placeholder="Vendor name"></label>
+          <label>Category<select name="category">
+              <option>Rice & Swallow</option>
+              <option>Fast Food</option>
+              <option>Buka (Mama Put)</option>
+              <option>Cafés & Bakeries</option>
+              <option>Groceries</option>
+              <option>Livestock</option>
+              <option>Fine & Casual Dining</option>
+            </select></label>
+          <label>Price (₦)<input name="price" type="number" min="0" required placeholder="3500"></label>
+          <div class="form-actions"><button type="button" class="btn btn-light"
+              id="cancelMealBtn">Cancel</button><button class="btn btn-primary" type="submit">Save meal</button></div>
+        </form>
+      </div>
+      <div id="mealsContent"></div>
+    </section>
+
+    <section class="view" id="view-orders">
+      <div class="section-toolbar">
+        <div>
+          <h2>Order management</h2>
+          <p>Track orders and update their demo status.</p>
+        </div><input id="orderSearch" placeholder="Search orders…" aria-label="Search orders">
+      </div>
+      <div id="ordersContent"></div>
+    </section>
+
+    <section class="view" id="view-reservations">
+      <div class="section-toolbar">
+        <div>
+          <h2>Reservations</h2>
+          <p>Review table bookings and update their status.</p>
+        </div><input id="reservationSearch" placeholder="Search reservations…" aria-label="Search reservations">
+      </div>
+      <div id="reservationsContent"></div>
+    </section>
+
+    <section class="view" id="view-support">
+      <div class="section-toolbar">
+        <div>
+          <h2>Customer support</h2>
+          <p>Review messages and mark demo requests as resolved.</p>
+        </div><input id="supportSearch" placeholder="Search support…" aria-label="Search support messages">
+      </div>
+      <div id="supportContent"></div>
+      <div class="form-panel">
+        <h3>Log a demo support request</h3>
+        <form id="supportForm" class="form-grid"><label>Customer name<input name="customer" required
+              placeholder="Customer name"></label><label>Topic<input name="topic" required
+              placeholder="Order issue, payment question…"></label><label class="full">Message<textarea name="message"
+              required rows="3" placeholder="Describe the issue"></textarea></label>
+          <div class="form-actions"><button class="btn btn-primary" type="submit">Add support request</button></div>
+        </form>
+      </div>
+    </section>
+
+    <section class="view" id="view-community">
+      <div class="section-toolbar">
+        <div>
+          <h2>Community moderation</h2>
+          <p>Review food-community posts and hide content in this demo.</p>
+        </div><input id="communitySearch" placeholder="Search posts…" aria-label="Search community posts">
+      </div>
+      <div id="communityContent"></div>
+    </section>
+
+    <footer class="footer">NaijaBites Agent Workspace · University project demo · <button id="seedBtn"
+        class="text-button">Load sample data</button> · <button id="clearBtn" class="text-button danger-text">Clear demo
+        data</button></footer>
+  </main>
+
+  <dialog id="vendorDialog" class="dialog">
+    <form id="vendorForm" method="dialog">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">VENDOR MANAGEMENT</p>
+          <h2 id="vendorDialogTitle">Add vendor</h2>
+        </div><button type="button" class="icon-button" id="closeVendorDialog" aria-label="Close">×</button>
+      </div>
+      <input type="hidden" name="id">
+      <div class="form-grid"><label>Business name<input name="businessName" required></label><label>Owner name<input
+            name="owner" required></label><label>Email<input name="email" type="email"></label><label>Phone<input
+            name="phone"></label><label>Location<input name="location"
+            placeholder="e.g. Yaba, Lagos"></label><label>Category<select name="category">
+            <option>Buka (Mama Put)</option>
+            <option>Fast Food</option>
+            <option>Cafés & Bakeries</option>
+            <option>Fine & Casual Dining</option>
+            <option>Groceries</option>
+            <option>Livestock</option>
+          </select></label></div>
+      <div class="form-actions"><button type="button" class="btn btn-light"
+          id="cancelVendorDialog">Cancel</button><button class="btn btn-primary" type="submit">Save vendor</button>
+      </div>
+    </form>
+  </dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="agent.js"></script>
+</body>
+
+</html>

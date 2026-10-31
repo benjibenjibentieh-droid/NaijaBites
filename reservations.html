@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Book a Table | NaijaBites</title>
+    <link rel="stylesheet" href="reservations.css">
+    <script src="reservations.js" defer></script>
+</head>
+
+<body>
+    <header class="top"><a class="brand" href="index.html">👨🏾‍🍳 <strong>Naija<span>Bites</span></strong></a>
+        <nav><a href="index.html">Marketplace</a><a href="reservation-history.html">My Reservations</a></nav>
+    </header>
+    <main class="wrap"><a class="back" href="index.html">← Back to marketplace</a>
+        <section class="intro">
+            <p class="eyebrow">MAKE IT A DATE</p>
+            <h1>Reserve your table</h1>
+            <p>Plan a meal with friends, family or classmates. This is a frontend demo; it does not contact a restaurant
+                or guarantee a real table.</p>
+        </section>
+        <div class="layout">
+            <form id="reservationForm" class="panel">
+                <h2>Reservation details</h2><label for="restaurant">Restaurant</label><select id="restaurant" required>
+                    <option value="">Choose a demo restaurant</option>
+                    <option>Mama Nkechi's Kitchen</option>
+                    <option>Campus Grill House</option>
+                    <option>Suya Spot</option>
+                    <option>Green Bowl Café</option>
+                    <option>Naija Fusion Bistro</option>
+                </select>
+                <div class="two">
+                    <div><label for="fullName">Your name</label><input id="fullName" maxlength="70" required
+                            placeholder="Full name"></div>
+                    <div><label for="email">Email address</label><input id="email" type="email" required
+                            placeholder="you@example.com"></div>
+                </div>
+                <div class="two">
+                    <div><label for="phone">Phone number</label><input id="phone" type="tel" required minlength="7"
+                            maxlength="20" placeholder="e.g. 08012345678"></div>
+                    <div><label for="guests">Party size</label><select id="guests" required>
+                            <option value="1">1 person</option>
+                            <option value="2" selected>2 people</option>
+                            <option value="3">3 people</option>
+                            <option value="4">4 people</option>
+                            <option value="5">5 people</option>
+                            <option value="6">6 people</option>
+                            <option value="7">7 people</option>
+                            <option value="8">8 people</option>
+                        </select></div>
+                </div>
+                <div class="two">
+                    <div><label for="date">Date</label><input id="date" type="date" required></div>
+                    <div><label for="time">Time</label><select id="time" required>
+                            <option value="">Choose a time</option>
+                            <option>10:00 AM</option>
+                            <option>11:00 AM</option>
+                            <option>12:00 PM</option>
+                            <option>1:00 PM</option>
+                            <option>2:00 PM</option>
+                            <option>3:00 PM</option>
+                            <option>4:00 PM</option>
+                            <option>5:00 PM</option>
+                            <option>6:00 PM</option>
+                            <option>7:00 PM</option>
+                            <option>8:00 PM</option>
+                            <option>9:00 PM</option>
+                        </select></div>
+                </div>
+                <label for="notes">Special requests <span class="muted">(optional)</span></label><textarea id="notes"
+                    rows="3" maxlength="300" placeholder="Any accessibility needs or special occasion?"></textarea>
+                <p id="message" class="message" role="status"></p><button class="primary" type="submit">Save demo
+                    reservation</button><small>Demo only: this saves a reservation record in this browser's local
+                    storage. It is not sent to the restaurant.</small>
+            </form>
+            <aside class="panel side">
+                <div class="icon">🍽️</div>
+                <h2>Good food, good company</h2>
+                <p>Choose your restaurant, date and time. You can review or cancel your saved demo reservations anytime.
+                </p><a class="secondary" href="reservation-history.html">View my reservations →</a>
+                <hr>
+                <p class="muted">Need to change plans? Your saved demo bookings can be cancelled from Reservation
+                    History.</p>
+            </aside>
+        </div>
+    </main>
+</body>
+
+</html>

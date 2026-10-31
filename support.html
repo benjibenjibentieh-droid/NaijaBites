@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Support | NaijaBites</title>
+    <link rel="stylesheet" href="support.css">
+    <script src="support.js" defer></script>
+</head>
+
+<body>
+    <header class="top"><a class="brand" href="index.html">👨🏾‍🍳 <strong>Naija<span>Bites</span></strong></a>
+        <nav><a href="index.html">Marketplace</a><a href="community.html">Food Community</a></nav>
+    </header>
+    <main class="wrap"><a class="back" href="index.html">← Back to marketplace</a>
+        <section class="intro">
+            <p class="eyebrow">WE'RE HERE TO HELP</p>
+            <h1>NaijaBites Support</h1>
+            <p>Find quick answers or send a message in this frontend demo.</p>
+        </section>
+        <div class="layout">
+            <section class="panel">
+                <h2>Frequently asked questions</h2>
+                <details open>
+                    <summary>How do I place an order?</summary>
+                    <p>Add meals to your cart, choose Proceed to Order and complete the demo checkout form. No payment
+                        or delivery is actually arranged.</p>
+                </details>
+                <details>
+                    <summary>Where can I find my orders?</summary>
+                    <p>Use the My Orders shortcut on the marketplace to view orders saved in this browser.</p>
+                </details>
+                <details>
+                    <summary>Are table reservations real?</summary>
+                    <p>No. Reservations are demo records stored locally and are not sent to restaurants.</p>
+                </details>
+                <details>
+                    <summary>How do I update my profile?</summary>
+                    <p>Open your profile from the marketplace and choose Edit Profile. This demo stores profile data in
+                        your browser.</p>
+                </details>
+            </section>
+            <section class="panel">
+                <h2>Send us a message</h2>
+                <p class="muted">Your message is saved locally for demonstration; it is not sent to a support team.</p>
+                <form id="supportForm"><label for="name">Name</label><input id="name" maxlength="70" required
+                        placeholder="Your name"><label for="email">Email</label><input id="email" type="email" required
+                        placeholder="you@example.com"><label for="topic">Topic</label><select id="topic" required>
+                        <option value="">Choose a topic</option>
+                        <option>Order help</option>
+                        <option>Reservations</option>
+                        <option>Account and profile</option>
+                        <option>Vendor enquiry</option>
+                        <option>Other</option>
+                    </select><label for="message">Message</label><textarea id="message" rows="5" maxlength="1000"
+                        required placeholder="How can we help?"></textarea><button class="primary">Save demo
+                        message</button>
+                    <p id="status" role="status"></p>
+                </form>
+            </section>
+        </div>
+        <section class="panel saved">
+            <h2>Messages saved on this device</h2>
+            <div id="savedMessages"></div>
+        </section>
+    </main>
+</body>
+
+</html>

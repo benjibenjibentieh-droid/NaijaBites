@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Profile | NaijaBites</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="signup.css">
+</head>
+
+<body class="signup-page">
+    <header class="signup-header"><a class="signup-brand" href="index.html"><span
+                class="brand-mark">N</span><span>Naija<span class="brand-accent">Bites</span></span></a><a
+            class="back-home" href="index.html">← Back to marketplace</a></header>
+    <main class="signup-layout">
+        <section class="signup-intro">
+            <p class="eyebrow">YOUR ACCOUNT</p>
+            <h1>Make your profile feel like you.</h1>
+            <p>Keep your contact details up to date so your NaijaBites demo account stays organised.</p>
+            <div class="signup-benefits">
+                <p><span>✓</span> Update your display name</p>
+                <p><span>✓</span> Keep your email current</p>
+                <p><span>✓</span> Add a contact number</p>
+            </div>
+        </section>
+        <section class="signup-card">
+            <p class="eyebrow">PROFILE SETTINGS</p>
+            <h2>Edit profile</h2>
+            <p class="signup-subtitle">Changes are saved in this browser for the demo.</p>
+            <form id="profileForm" novalidate>
+                <div class="field"><label for="fullName">Full name</label><input id="fullName" required maxlength="80"
+                        autocomplete="name"><small class="field-error" id="nameError"></small></div>
+                <div class="field"><label for="email">Email address</label><input id="email" type="email" required
+                        autocomplete="email"><small class="field-error" id="emailError"></small></div>
+                <div class="field"><label for="phone">Phone number</label><input id="phone" type="tel"
+                        autocomplete="tel" placeholder="+234 800 000 0000"><small class="field-error"
+                        id="phoneError"></small></div>
+                <p class="form-message" id="formMessage" role="status" aria-live="polite"></p>
+                <button class="signup-submit" type="submit">Save changes <span>→</span></button>
+                <button class="secondary" id="signOutButton" type="button">Sign out</button>
+            </form>
+            <p class="signin-prompt"><a href="index.html">Return to marketplace</a></p>
+        </section>
+    </main>
+    <footer class="signup-footer">© <span id="year"></span> NaijaBites · A university project demo</footer>
+    <script src="edit-profile.js"></script>
+</body>
+
+</html>

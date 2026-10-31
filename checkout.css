@@ -1,0 +1,87 @@
+.checkout-items {
+    display: grid;
+    gap: 9px;
+    margin: 0 0 22px
+}
+
+.checkout-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #f4f0e7;
+    font-size: .88rem
+}
+
+.checkout-item small {
+    display: block;
+    color: #788278;
+    margin-top: 3px
+}
+
+.checkout-items:empty {
+    display: none
+}
+
+.checkout-card textarea,
+.signup-card textarea,
+.signup-card select {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #dcded5;
+    border-radius: 11px;
+    background: #fff;
+    color: #20352b;
+    padding: 13px 14px;
+    font: inherit;
+    resize: vertical
+}
+
+.signup-card textarea:focus,
+.signup-card select:focus {
+    outline: none;
+    border-color: #2d7957;
+    box-shadow: 0 0 0 3px #2d79571c
+}
+
+.checkout-total {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee8dd;
+    color: #637167;
+    font-size: .92rem
+}
+
+.checkout-total strong {
+    color: #20352b
+}
+
+.grand-total {
+    margin-bottom: 10px;
+    border-bottom: 0;
+    font-size: 1.05rem;
+    color: #174c38
+}
+
+.grand-total strong {
+    color: #174c38;
+    font-size: 1.2rem
+}
+
+.checkout-layout {
+    align-items: start
+}
+
+.checkout-layout .signup-intro {
+    position: sticky;
+    top: 30px
+}
+
+@media(max-width:760px) {
+    .checkout-layout .signup-intro {
+        position: static
+    }
+}

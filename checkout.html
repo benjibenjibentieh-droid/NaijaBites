@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout | NaijaBites</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .pay-page {
+      max-width: 980px;
+      margin: 28px auto;
+      padding: 0 18px 48px
+    }
+
+    .pay-card {
+      background: #fff;
+      border: 1px solid #eadfd7;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 8px 30px #52240d0c
+    }
+
+    .pay-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 20px
+    }
+
+    .pay-page h1 {
+      margin: 8px 0 20px
+    }
+
+    .pay-page label {
+      display: block;
+      font-weight: 600;
+      margin: 12px 0 6px
+    }
+
+    .pay-page input {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d8cbc2;
+      border-radius: 10px;
+      font: inherit
+    }
+
+    .pay-page .primary {
+      width: 100%;
+      margin-top: 18px
+    }
+
+    .pay-items {
+      display: grid;
+      gap: 12px
+    }
+
+    .pay-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #f0e6df;
+      padding-bottom: 10px
+    }
+
+    .pay-item small {
+      display: block;
+      color: #78695f
+    }
+
+    .pay-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.2rem;
+      margin-top: 16px
+    }
+
+    .pay-note {
+      font-size: .9rem;
+      color: #77675d
+    }
+
+    .pay-message {
+      margin-top: 12px;
+      color: #9b321f
+    }
+
+    .back-link {
+      display: inline-block;
+      margin: 0 0 18px;
+      color: #a94313
+    }
+
+    @media(max-width:720px) {
+      .pay-grid {
+        grid-template-columns: 1fr
+      }
+
+      .pay-card {
+        padding: 18px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="pay-page">
+    <a class="back-link" href="index.html">← Back to NaijaBites</a>
+    <p class="eyebrow">SECURE CHECKOUT · PAYSTACK TEST MODE</p>
+    <h1>Complete your order</h1>
+    <section class="checkout-delivery-location" aria-labelledby="checkoutDeliveryTitle">
+      <h2 id="checkoutDeliveryTitle">📍 Delivery location</h2>
+      <p id="checkoutDeliveryAddress" class="checkout-delivery-address">Loading your selected delivery location…</p><a
+        href="index.html?cart=1">Change delivery location</a>
+    </section>
+    <div class="pay-grid">
+      <section class="pay-card">
+        <h2>Customer details</h2>
+        <form id="checkoutForm">
+          <label for="customerName">Full name</label><input id="customerName" name="name" autocomplete="name" required
+            minlength="2" maxlength="120">
+          <label for="customerEmail">Email address</label><input id="customerEmail" name="email" type="email"
+            autocomplete="email" required maxlength="254">
+          <label for="customerPhone">Phone number *</label><input id="customerPhone" name="phone" type="tel"
+            autocomplete="tel" required maxlength="40">
+          <p id="checkoutMessage" class="pay-message" role="alert"></p>
+          <button class="primary" id="payButton" type="submit">Continue to Paystack</button>
+          <p class="pay-note">You will be redirected to Paystack's hosted checkout. This package is configured for test
+            payments only; no real charge should be made.</p>
+        </form>
+      </section>
+      <aside class="pay-card">
+        <h2>Order summary</h2>
+        <div id="orderItems" class="pay-items"></div>
+        <div class="pay-total"><span>Total</span><strong id="orderTotal">₦0</strong></div>
+        <p class="pay-note">The server recalculates prices from the marketplace catalog before initializing payment.</p>
+      </aside>
+    </div>
+  </main>
+  <script src="checkout.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Payment status | NaijaBites</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .result-wrap {
+            max-width: 620px;
+            margin: 60px auto;
+            padding: 20px
+        }
+
+        .result-card {
+            background: #fff;
+            border: 1px solid #eadfd7;
+            border-radius: 18px;
+            padding: 28px;
+            text-align: center
+        }
+
+        .result-card p {
+            line-height: 1.6
+        }
+
+        .result-card .primary,
+        .result-card .secondary {
+            display: inline-block;
+            margin: 8px;
+            padding: 12px 18px;
+            text-decoration: none;
+            border: 0;
+            border-radius: 10px;
+            cursor: pointer
+        }
+
+        .status-icon {
+            font-size: 2.4rem
+        }
+    </style>
+</head>
+
+<body>
+    <main class="result-wrap">
+        <section class="result-card">
+            <p class="eyebrow">NAIJABITES PAYMENT</p>
+            <div id="statusIcon" class="status-icon">…</div>
+            <h1 id="statusTitle">Checking payment</h1>
+            <p id="statusMessage">Please wait while the server verifies your payment with Paystack.</p>
+            <p id="orderDetail"></p><a class="primary" href="index.html">Return to marketplace</a><button
+                id="retryButton" class="secondary" type="button" hidden>Check again</button>
+        </section>
+    </main>
+    <script>
+        (async function () {
+            const params = new URLSearchParams(location.search); const reference = params.get('reference') || params.get('trxref');
+            const title = document.getElementById('statusTitle'), msg = document.getElementById('statusMessage'), icon = document.getElementById('statusIcon'), detail = document.getElementById('orderDetail'), retry = document.getElementById('retryButton');
+            async function verify() {
+                if (!reference) { title.textContent = 'No payment reference'; icon.textContent = '!'; msg.textContent = 'We could not find a Paystack reference in this return URL. Check your order before retrying.'; retry.hidden = true; return; }
+                title.textContent = 'Checking payment'; icon.textContent = '…'; msg.textContent = 'Please wait while the server verifies your payment with Paystack.'; retry.hidden = true;
+                try {
+                    const response = await fetch('/api/payments/verify?reference=' + encodeURIComponent(reference)); const result = await response.json();
+                    if (response.ok && result.paid) { title.textContent = 'Payment successful'; icon.textContent = '✓'; msg.textContent = 'Your payment was verified by the server. Your NaijaBites order is confirmed.'; detail.textContent = 'Order #' + result.orderId + ' · ' + new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 }).format(result.totalNaira); }
+                    else { title.textContent = 'Payment not confirmed yet'; icon.textContent = '!'; msg.textContent = result.message || result.error || 'We could not confirm a successful payment. If you completed payment just now, check again in a few seconds.'; retry.hidden = false; }
+                } catch (e) { title.textContent = 'Could not verify yet'; icon.textContent = '!'; msg.textContent = 'The server could not verify the payment right now. Keep this page open and try again.'; retry.hidden = false; }
+            }
+            retry.addEventListener('click', verify); await verify();
+        })();
+    </script>
+</body>
+
+</html>

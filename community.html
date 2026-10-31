@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Food Community | NaijaBites</title>
+    <link rel="stylesheet" href="community.css">
+    <script src="community.js" defer></script>
+</head>
+
+<body>
+    <header class="top"><a class="brand" href="index.html">👨🏾‍🍳 <strong>Naija<span>Bites</span></strong></a>
+        <nav><a href="index.html">Marketplace</a><a href="support.html">Support</a></nav>
+    </header>
+    <main class="wrap"><a class="back" href="index.html">← Back to marketplace</a>
+        <section class="hero">
+            <p class="eyebrow">PULL UP A CHAIR</p>
+            <h1>Welcome to the <span>Food Community</span></h1>
+            <p>Share your food discoveries, swap cooking tips and celebrate the flavours that bring us together.</p>
+        </section>
+        <section class="composer panel">
+            <h2>Share something tasty</h2>
+            <form id="postForm"><label for="author">Your name</label><input id="author" maxlength="50" required
+                    placeholder="What should we call you?"><label for="postText">Your post</label><textarea
+                    id="postText" rows="3" maxlength="500" required
+                    placeholder="Tell the community about a meal, recipe or food tip..."></textarea>
+                <div class="compose-bottom"><small>Keep it kind and food-focused. Posts are saved only in this
+                        browser.</small><button class="primary">Share post</button></div>
+                <p id="formMessage" role="status"></p>
+            </form>
+        </section>
+        <div class="feed-heading">
+            <div>
+                <p class="eyebrow">FROM THE TABLE</p>
+                <h2>Community board</h2>
+            </div><button id="clearPosts" class="quiet">Clear my posts</button>
+        </div>
+        <section id="feed" class="feed" aria-live="polite"></section>
+    </main>
+</body>
+
+</html>
