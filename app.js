@@ -30,7 +30,22 @@ const meals = [
 ];
 const info = { all: ["All Markets", "(Explore every category)", "🛍️", "Explore All Markets"], breakfast: ["Cafés & Bakeries", "(Coffee, bread & pastries)", "☕", "Cafés & Bakeries Near You"], lunch: ["Fast Food", "(Quick meals & takeaway)", "🍔", "Fast Food Near You"], dinner: ["Dining", "(Restaurant menus)", "🍽️", "Dining Menus Near You"], buka: ["Buka (Mama Put)", "(Local favourites)", "🍲", "Buka Favourites"], groceries: ["Groceries", "(Farm foods & store provisions)", "🛒", "Groceries & Store Provisions"], livestock: ["Livestock", "(Live farm animals)", "🐄", "Live Animals for Sale"] };
 const $ = id => document.getElementById(id); let market = (() => { let h = new Date().getHours(); return h >= 5 && h < 11 ? "breakfast" : h >= 11 && h < 16 ? "lunch" : "dinner" })(); let qty = {}, cart = {}, currentUser = null;
-async function api(url, options = {}) { const r = await fetch(url, { credentials: "same-origin", headers: { "Content-Type": "application/json", ...(options.headers || {}) }, ...options }); const data = await r.json().catch(() => ({})); if (!r.ok) throw new Error(data.error || "Request failed"); return data }
+const API_BASE = "https://naijabites.onrender.com";
+
+async function api(url, options = {}) {
+  const r = await fetch(`${API_BASE}${url}`, {
+    ...options,
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    }
+  });
+
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || "Request failed");
+  return data;
+}
 async function loadSessionAndCart() { try { const [products, d] = await Promise.all([api("/api/products"), api("/api/auth/me")]); for (const p of products.products || []) { const m = meals.find(x => x.id === Number(p.id)); if (m) { m.name = p.name; m.vendor = p.vendor; m.price = Number(p.price) } } currentUser = d.user; if (currentUser) { const c = await api("/api/cart"); cart = c.cart || {} } else cart = {} } catch (e) { cart = {}; } render(); updateAccountUI(); updateCart(); }
 function money(n) { return "₦" + Number(n).toLocaleString("en-NG") } function toast(t) { $("toast").textContent = t; $("toast").classList.add("show"); clearTimeout(toast.timer); toast.timer = setTimeout(() => $("toast").classList.remove("show"), 2300) } function modal(id) { if (!$(id).open) $(id).showModal() } function notice(title, text) { $("noticeTitle").textContent = title; $("noticeText").textContent = text; modal("noticeModal") }
 function updateAccountUI() {
@@ -77,7 +92,7 @@ function render() {
 }
 async function loadPublishedVendorMeals() {
   try {
-    const response = await fetch('/api/products');
+    const response = await fetch(`${API_BASE}/api/products`, {credentials: "include"});
     if (!response.ok) throw new Error('Could not load vendor meals');
     const data = await response.json();
     const published = (data.products || []).map((p) => {
