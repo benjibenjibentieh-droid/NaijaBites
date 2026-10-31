@@ -1,6 +1,144 @@
-const form = document.getElementById("postForm"), feed = document.getElementById("feed"), message = document.getElementById("formMessage");
-function esc(v) { return String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])) }
-async function request(url, options = {}) { const r = await fetch(url, { credentials: "same-origin", headers: { "Content-Type": "application/json" }, ...options }); const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || "Request failed"); return d }
-async function render() { try { const d = await request("/api/community/posts"), posts = d.posts || []; if (!posts.length) { feed.innerHTML = '<div class="empty"><div style="font-size:36px">🥘</div><h3>It is quiet around the table</h3><p>Sign in and be the first to share a food tip or discovery.</p></div>'; return } feed.innerHTML = posts.map(p => `<article class="post"><div class="post-head"><div class="avatar">🍲</div><div><strong>${esc(p.author)}</strong><small>${new Date(p.createdAt).toLocaleString()}</small></div></div><p>${esc(p.text)}</p><div class="post-actions"><button data-like="${esc(p.id)}">♡ Helpful (${Number(p.likes) || 0})</button><button data-delete="${esc(p.id)}">Delete my post</button></div></article>`).join(""); feed.querySelectorAll("[data-like]").forEach(b => b.onclick = async () => { try { await request(`/api/community/posts/${b.dataset.like}/like`, { method: "POST", body: "{}" }); render() } catch (e) { message.textContent = e.message } }); feed.querySelectorAll("[data-delete]").forEach(b => b.onclick = async () => { try { await request(`/api/community/posts/${b.dataset.delete}`, { method: "DELETE" }); render() } catch (e) { message.textContent = e.message } }) } catch (e) { feed.textContent = e.message } }
-form.addEventListener("submit", async e => { e.preventDefault(); const text = document.getElementById("postText").value.trim(); if (!text) return; try { await request("/api/community/posts", { method: "POST", body: JSON.stringify({ text }) }); form.reset(); message.textContent = "Your post was saved to the NaijaBites database."; render() } catch (e) { message.textContent = e.message } });
-document.getElementById("clearPosts").hidden = true; render();
+
+const API_BASE = "https://naijabites.onrender.com";
+
+const form = document.getElementById("postForm");
+const feed = document.getElementById("feed");
+const message = document.getElementById("formMessage");
+
+function esc(v) {
+    return String(v ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[c]));
+}
+
+async function request(url, options = {}) {
+    const r = await fetch(`${API_BASE}${url}`, {
+        ...options,
+        credentials: "include",
+        headers: {
+            "Accept": "application/json",
+            ...(options.body ? { "Content-Type": "application/json" } : {}),
+            ...(options.headers || {})
+        }
+    });
+
+    const text = await r.text();
+    let d;
+
+    try {
+        d = JSON.parse(text);
+    } catch {
+        throw new Error("The server returned an invalid response.");
+    }
+
+    if (!r.ok) {
+        throw new Error(d.error || `Request failed (${r.status}).`);
+    }
+
+    return d;
+}
+
+async function render() {
+    try {
+        const d = await request("/api/community/posts");
+        const posts = d.posts || [];
+
+        if (!posts.length) {
+            feed.innerHTML = `
+                <div class="empty">
+                    <div style="font-size:36px">🥘</div>
+                    <h3>It is quiet around the table</h3>
+                    <p>Sign in and be the first to share a food tip or discovery.</p>
+                </div>`;
+            return;
+        }
+
+        feed.innerHTML = posts.map(p => `
+            <article class="post">
+                <div class="post-head">
+                    <div class="avatar">🍲</div>
+                    <div>
+                        <strong>${esc(p.author)}</strong>
+                        <small>${new Date(p.createdAt).toLocaleString()}</small>
+                    </div>
+                </div>
+
+                <p>${esc(p.text)}</p>
+
+                <div class="post-actions">
+                    <button data-like="${esc(p.id)}">
+                        ♡ Helpful (${Number(p.likes) || 0})
+                    </button>
+                    <button data-delete="${esc(p.id)}">
+                        Delete my post
+                    </button>
+                </div>
+            </article>
+        `).join("");
+
+        feed.querySelectorAll("[data-like]").forEach(b => {
+            b.onclick = async () => {
+                try {
+                    await request(
+                        `/api/community/posts/${encodeURIComponent(b.dataset.like)}/like`,
+                        { method: "POST", body: "{}" }
+                    );
+                    await render();
+                } catch (e) {
+                    message.textContent = e.message;
+                }
+            };
+        });
+
+        feed.querySelectorAll("[data-delete]").forEach(b => {
+            b.onclick = async () => {
+                if (!confirm("Are you sure you want to delete your post?")) return;
+
+                try {
+                    await request(
+                        `/api/community/posts/${encodeURIComponent(b.dataset.delete)}`,
+                        { method: "DELETE" }
+                    );
+                    await render();
+                } catch (e) {
+                    message.textContent = e.message;
+                }
+            };
+        });
+
+    } catch (e) {
+        feed.textContent = e.message || "Could not load community posts.";
+    }
+}
+
+form.addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const text = document.getElementById("postText").value.trim();
+
+    if (!text) return;
+
+    try {
+        await request("/api/community/posts", {
+            method: "POST",
+            body: JSON.stringify({ text })
+        });
+
+        form.reset();
+        message.textContent =
+            "Your post was saved to the NaijaBites database.";
+
+        await render();
+
+    } catch (e) {
+        message.textContent = e.message;
+    }
+});
+
+document.getElementById("clearPosts").hidden = true;
+
+render();
