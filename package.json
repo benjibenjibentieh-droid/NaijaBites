@@ -2,7 +2,7 @@
   "name": "naijabites-sqlserver-paystack-test",
   "version": "1.0.0",
   "private": true,
-  "description": "NaijaBites marketplace with Paystack test payments and Microsoft SQL Server Windows Authentication",
+  "description": "NaijaBites marketplace with Azure SQL and Paystack test payments",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -12,10 +12,10 @@
     "node": ">=20"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "express-rate-limit": "^8.1.0",
-    "msnodesqlv8": "^6.2.1",
     "mssql": "^11.0.1"
   }
 }
