@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql);
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -45,28 +45,36 @@ const CATALOG = new Map([
 ]);
 
 let poolPromise;
+
 function getPool() {
   if (!poolPromise) {
-    const sqlServer = process.env.SQL_SERVER || 'localhost';
-    const sqlInstance = process.env.SQL_INSTANCE || '';
-    const sqlDatabase = process.env.SQL_DATABASE || 'NaijaBites';
-    const serverAddress = sqlInstance ? `${sqlServer}\\${sqlInstance}` : sqlServer;
     const config = {
-      server: sqlServer,
-      database: sqlDatabase,
-      driver: 'msnodesqlv8',
-      // Explicit ODBC Driver 18 avoids depending on the legacy SQL Server Native Client.
-      connectionString: `Driver={ODBC Driver 18 for SQL Server};Server={${serverAddress}};Database={${sqlDatabase}};Trusted_Connection={Yes};TrustServerCertificate={Yes};`,
-      options: { trustedConnection: true, trustServerCertificate: true },
-      pool: { max: 10, min: 0, idleTimeoutMillis: 30000 },
-      connectionTimeout: 15000,
-      requestTimeout: 20000
+      user: process.env.SQL_USER,
+      password: process.env.SQL_PASSWORD,
+      server: process.env.SQL_SERVER,
+      database: process.env.SQL_DATABASE || 'NaijaBites',
+      port: 1433,
+      options: {
+        encrypt: true,
+        trustServerCertificate: false
+      },
+      pool: {
+        max: 10,
+        min: 0,
+        idleTimeoutMillis: 30000
+      },
+      connectionTimeout: 30000,
+      requestTimeout: 30000
     };
-    poolPromise = new sql.ConnectionPool(config).connect().catch(err => {
-      poolPromise = null;
-      throw err;
-    });
+
+    poolPromise = new sql.ConnectionPool(config)
+      .connect()
+      .catch(err => {
+        poolPromise = null;
+        throw err;
+      });
   }
+
   return poolPromise;
 }
 
