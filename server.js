@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
-const sql = require('mssql);
+const sql = require('mssql');
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
