@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
+const cors = require('cors');
 const sql = require('mssql');
 
 const app = express();
@@ -79,6 +80,12 @@ function getPool() {
 }
 
 app.disable('x-powered-by');
+app.use(cors({
+  origin: 'https://benjibenjibentieh-droid.github.io',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type']
+}));
 app.use(express.json({ limit: '30kb' }));
 app.use('/api/payments', rateLimit({ windowMs: 60 * 1000, limit: 30, standardHeaders: true, legacyHeaders: false }));
 app.use((req, res, next) => { if (['/server.js', '/schema.sql', '/package.json', '/package-lock.json', '/.env.example', '/README.md', '/INTEGRATION.md'].includes(req.path)) return res.sendStatus(404); next(); });
@@ -123,8 +130,10 @@ function cookieValue(req, name) {
   return found ? decodeURIComponent(found.slice(name.length + 1)) : '';
 }
 function setSessionCookie(res, token) {
-  const secure = process.env.COOKIE_SECURE === 'true' ? '; Secure' : '';
-  res.setHeader('Set-Cookie', `nb_session=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800${secure}`);
+  res.setHeader(
+    'Set-Cookie',
+    `nb_session=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=None; Secure; Max-Age=604800`
+  );
 }
 async function currentUserFromRequest(req) {
   const token = cookieValue(req, 'nb_session');
@@ -189,11 +198,16 @@ app.post('/api/auth/login', async (req, res) => {
     await createSession(pool, user.UserId, res); delete user.PasswordHash; res.json({ ok: true, user });
   } catch (err) { console.error('Login failed:', err.message); apiError(res, 503, 'Could not sign in. Check the database connection.'); }
 });
-app.get('/api/auth/me', (req, res) => res.json({ ok: true, user: req.user ? { name: req.user.name, email: req.user.email, phone: req.user.phone || '' } : null }));
+app.get('/api/auth/me', (req, res) => res.json({
+  ok: true,
+  user: req.user
+    ? { name: req.user.name, email: req.user.email, phone: req.user.phone || '' }
+    : null
+}));
 app.post('/api/auth/logout', async (req, res) => {
   try { const token = cookieValue(req, 'nb_session'); if (token) { const h = crypto.createHash('sha256').update(token).digest('hex'); const pool = await getPool(); await new sql.Request(pool).input('h', sql.Char(64), h).query('DELETE FROM dbo.UserSessions WHERE TokenHash=@h'); } }
   catch (err) { console.error('Logout session cleanup failed:', err.message) }
-  res.setHeader('Set-Cookie', 'nb_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0'); res.json({ ok: true });
+  res.setHeader('Set-Cookie', 'nb_session=; Path=/; HttpOnly; SameSite=None; Secure; Max-Age=0'); res.json({ ok: true });
 });
 app.put('/api/auth/profile', requireUser, async (req, res) => {
   const name = String(req.body?.name || '').trim(), email = String(req.body?.email || '').trim().toLowerCase(), phone = String(req.body?.phone || '').trim();
@@ -235,13 +249,18 @@ async function requireVendor(req, res, next) {
     if (!r.recordset.length) return apiError(res, 401, 'Vendor session expired. Please sign in again.'); req.vendor = r.recordset[0]; next();
   } catch (e) { console.error('Vendor session failed:', e.message); apiError(res, 503, 'Could not validate vendor session.') }
 }
-async function createVendorSession(pool, vendorId, res) { const token = crypto.randomBytes(32).toString('hex'), hash = crypto.createHash('sha256').update(token).digest('hex'); await new sql.Request(pool).input('id', sql.BigInt, vendorId).input('hash', sql.Char(64), hash).query(`INSERT dbo.VendorSessions(VendorId,TokenHash,ExpiresAt) VALUES(@id,@hash,DATEADD(day,7,SYSUTCDATETIME()))`); const secure = process.env.COOKIE_SECURE === 'true' ? '; Secure' : ''; res.setHeader('Set-Cookie', `nb_vendor_session=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800${secure}`) }
+async function createVendorSession(pool, vendorId, res) { const token = crypto.randomBytes(32).toString('hex'), hash = crypto.createHash('sha256').update(token).digest('hex'); await new sql.Request(pool).input('id', sql.BigInt, vendorId).input('hash', sql.Char(64), hash).query(`INSERT dbo.VendorSessions(VendorId,TokenHash,ExpiresAt) VALUES(@id,@hash,DATEADD(day,7,SYSUTCDATETIME()))`); 
+                                                          res.setHeader(
+  'Set-Cookie',
+  `nb_vendor_session=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=None; Secure; Max-Age=604800`
+);}
 function imgixUrl(value) { try { const u = new URL(String(value || '')); const allowed = process.env.IMGIX_DOMAIN ? u.hostname.toLowerCase() === process.env.IMGIX_DOMAIN.toLowerCase() : u.hostname.endsWith('.imgix.net'); return u.protocol === 'https:' && allowed && u.username === '' && u.password === '' ? u.toString() : null } catch { return null } }
 app.post('/api/vendor/register', (_req, res) => {
   return apiError(res, 403, 'Vendor accounts are created by the NaijaBites team. Email sellersupport@naijabites.com to request access.');
 });
 app.post('/api/vendor/login', async (req, res) => { try { const email = String(req.body?.email || '').trim().toLowerCase(), password = String(req.body?.password || ''), pool = await getPool(); const r = await new sql.Request(pool).input('email', sql.NVarChar(254), email).query('SELECT VendorId AS id,CompanyName AS companyName,ContactName AS contactName,Email AS email,Phone AS phone,PasswordHash FROM dbo.Vendors WHERE Email=@email'); const v = r.recordset[0]; if (!v || !(await verifyPassword(password, v.PasswordHash))) return apiError(res, 401, 'Email or password is incorrect.'); delete v.PasswordHash; await createVendorSession(pool, v.id, res); res.json({ ok: true, vendor: v }) } catch (e) { console.error('Vendor login failed:', e.message); apiError(res, 503, 'Could not sign in to vendor account.') } });
-app.post('/api/vendor/logout', async (req, res) => { try { const t = vendorCookie(req); if (t) { const h = crypto.createHash('sha256').update(t).digest('hex'), pool = await getPool(); await new sql.Request(pool).input('hash', sql.Char(64), h).query('DELETE dbo.VendorSessions WHERE TokenHash=@hash') } } catch (e) { } res.setHeader('Set-Cookie', 'nb_vendor_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0'); res.json({ ok: true }) });
+app.post('/api/vendor/logout', async (req, res) => { try { const t = vendorCookie(req); if (t) { const h = crypto.createHash('sha256').update(t).digest('hex'), pool = await getPool(); await new sql.Request(pool).input('hash', sql.Char(64), h).query('DELETE dbo.VendorSessions WHERE TokenHash=@hash') } } catch (e) { } 
+                                                    res.setHeader('Set-Cookie', 'nb_vendor_session=; Path=/; HttpOnly; SameSite=None; Secure; Max-Age=0'); res.json({ ok: true }) });
 app.get('/api/vendor/me', requireVendor, (req, res) => res.json({ ok: true, vendor: req.vendor }));
 app.get('/api/vendor/dashboard', requireVendor, async (req, res) => { try { const pool = await getPool(); const [products, locations] = await Promise.all([new sql.Request(pool).input('id', sql.BigInt, req.vendor.id).query('SELECT ProductId AS id,ProductName AS name,PriceNaira AS price,Category AS category,ImageUrl AS image,Description AS description,IsActive AS active FROM dbo.Products WHERE VendorId=@id ORDER BY CreatedAt DESC'), new sql.Request(pool).input('id', sql.BigInt, req.vendor.id).query('SELECT LocationId AS id,LocationName AS name,Address AS address,City AS city,State AS state,Phone AS phone FROM dbo.VendorLocations WHERE VendorId=@id ORDER BY LocationId DESC')]); res.json({ ok: true, products: products.recordset, locations: locations.recordset }) } catch (e) { console.error('Vendor dashboard failed:', e.message); apiError(res, 500, 'Could not load vendor dashboard.') } });
 app.post('/api/vendor/locations', requireVendor, async (req, res) => { const b = req.body || {}, name = String(b.name || '').trim(), address = String(b.address || '').trim(), city = String(b.city || '').trim(), state = String(b.state || 'Lagos').trim(), phone = String(b.phone || '').trim(); if (name.length < 2 || address.length < 4 || city.length < 2) return apiError(res, 400, 'Enter location name, full address and city.'); try { const pool = await getPool(); const r = await new sql.Request(pool).input('id', sql.BigInt, req.vendor.id).input('name', sql.NVarChar(120), name).input('address', sql.NVarChar(300), address).input('city', sql.NVarChar(100), city).input('state', sql.NVarChar(100), state || 'Lagos').input('phone', sql.NVarChar(40), phone || null).query('INSERT dbo.VendorLocations(VendorId,LocationName,Address,City,State,Phone) OUTPUT INSERTED.LocationId AS id VALUES(@id,@name,@address,@city,@state,@phone)'); res.status(201).json({ ok: true, id: r.recordset[0].id }) } catch (e) { apiError(res, 500, 'Could not save location.') } });
@@ -255,7 +274,7 @@ app.get('/api/health', async (_req, res) => {
     res.json({ ok: true, database: 'connected', paymentMode: 'test' });
   } catch (err) {
     console.error('Health check SQL error:', err.message);
-    apiError(res, 503, 'Cannot connect to SQL Server. Check .env, SQL Server service, ODBC driver, and Windows login permissions.');
+    apiError(res, 503, 'Cannot connect to Azure SQL. Check the SQL environment variables, firewall rules, and database credentials.');
   }
 });
 
@@ -401,5 +420,5 @@ app.use((err, _req, res, _next) => {
 app.listen(PORT, () => {
   console.log(`NaijaBites running at ${BASE_URL}`);
   console.log(`Paystack mode: ${PAYSTACK_SECRET_KEY.startsWith('sk_test_') ? 'TEST' : 'NOT CONFIGURED (test key required)'}`);
-  console.log(`SQL Server: ${process.env.SQL_SERVER || 'localhost'}${process.env.SQL_INSTANCE ? '\\' + process.env.SQL_INSTANCE : ''} / ${process.env.SQL_DATABASE || 'NaijaBites'} (Windows Authentication)`);
+  console.log(`Azure SQL: ${process.env.SQL_SERVER || 'not configured'} / ${process.env.SQL_DATABASE || 'NaijaBites'} (SQL Authentication)`);
 });
