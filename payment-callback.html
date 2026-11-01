@@ -53,22 +53,73 @@
                 id="retryButton" class="secondary" type="button" hidden>Check again</button>
         </section>
     </main>
-    <script>
-        (async function () {
-            const params = new URLSearchParams(location.search); const reference = params.get('reference') || params.get('trxref');
-            const title = document.getElementById('statusTitle'), msg = document.getElementById('statusMessage'), icon = document.getElementById('statusIcon'), detail = document.getElementById('orderDetail'), retry = document.getElementById('retryButton');
-            async function verify() {
-                if (!reference) { title.textContent = 'No payment reference'; icon.textContent = '!'; msg.textContent = 'We could not find a Paystack reference in this return URL. Check your order before retrying.'; retry.hidden = true; return; }
-                title.textContent = 'Checking payment'; icon.textContent = '…'; msg.textContent = 'Please wait while the server verifies your payment with Paystack.'; retry.hidden = true;
-                try {
-                    const response = await fetch('/api/payments/verify?reference=' + encodeURIComponent(reference)); const result = await response.json();
-                    if (response.ok && result.paid) { title.textContent = 'Payment successful'; icon.textContent = '✓'; msg.textContent = 'Your payment was verified by the server. Your NaijaBites order is confirmed.'; detail.textContent = 'Order #' + result.orderId + ' · ' + new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 }).format(result.totalNaira); }
-                    else { title.textContent = 'Payment not confirmed yet'; icon.textContent = '!'; msg.textContent = result.message || result.error || 'We could not confirm a successful payment. If you completed payment just now, check again in a few seconds.'; retry.hidden = false; }
-                } catch (e) { title.textContent = 'Could not verify yet'; icon.textContent = '!'; msg.textContent = 'The server could not verify the payment right now. Keep this page open and try again.'; retry.hidden = false; }
+
+<script>
+    (async function () {
+        const API_BASE = 'https://naijabites.onrender.com';
+
+        const params = new URLSearchParams(location.search);
+        const reference = params.get('reference') || params.get('trxref');
+
+        const title = document.getElementById('statusTitle');
+        const msg = document.getElementById('statusMessage');
+        const icon = document.getElementById('statusIcon');
+        const detail = document.getElementById('orderDetail');
+        const retry = document.getElementById('retryButton');
+
+        async function verify() {
+            if (!reference) {
+                title.textContent = 'No payment reference';
+                icon.textContent = '!';
+                msg.textContent = 'We could not find a Paystack reference in this return URL. Check your order before retrying.';
+                retry.hidden = true;
+                return;
             }
-            retry.addEventListener('click', verify); await verify();
-        })();
-    </script>
+
+            title.textContent = 'Checking payment';
+            icon.textContent = '…';
+            msg.textContent = 'Please wait while the server verifies your payment with Paystack.';
+            retry.hidden = true;
+
+            try {
+                const response = await fetch(
+                    `${API_BASE}/api/payments/verify?reference=${encodeURIComponent(reference)}`,
+                    { credentials: 'include' }
+                );
+
+                const result = await response.json();
+
+                if (response.ok && result.paid) {
+                    title.textContent = 'Payment successful';
+                    icon.textContent = '✓';
+                    msg.textContent = 'Your payment was verified by the server. Your NaijaBites order is confirmed.';
+
+                    detail.textContent =
+                        'Order #' + result.orderId + ' · ' +
+                        new Intl.NumberFormat('en-NG', {
+                            style: 'currency',
+                            currency: 'NGN',
+                            maximumFractionDigits: 0
+                        }).format(result.totalNaira);
+                } else {
+                    title.textContent = 'Payment not confirmed yet';
+                    icon.textContent = '!';
+                    msg.textContent = result.message || result.error ||
+                        'We could not confirm a successful payment. If you just completed payment, check again in a few seconds.';
+                    retry.hidden = false;
+                }
+            } catch (error) {
+                title.textContent = 'Could not verify yet';
+                icon.textContent = '!';
+                msg.textContent = 'The server could not verify the payment right now. Keep this page open and try again.';
+                retry.hidden = false;
+            }
+        }
+
+        retry.addEventListener('click', verify);
+        await verify();
+    })();
+</script>
 </body>
 
 </html>
