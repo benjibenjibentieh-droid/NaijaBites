@@ -80,8 +80,18 @@ function getPool() {
 }
 
 app.disable('x-powered-by');
+const allowedOrigins = [
+  'https://benjibenjibentieh-droid.github.io',
+  'https://naijabites.onrender.com'
+];
+
 app.use(cors({
-  origin: 'https://benjibenjibentieh-droid.github.io',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Origin not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type']
@@ -279,6 +289,7 @@ app.get('/api/health', async (_req, res) => {
 });
 
 app.post('/api/payments/initialize', async (req, res) => {
+  const origin = req.headers.origin; if (!origin || !allowedOrigins.includes(origin)) { return apiError(res, 403, 'Checkout must start from an approved NaijaBites website.');}
   if (!PAYSTACK_SECRET_KEY.startsWith('sk_test_')) return apiError(res, 503, 'Paystack test key is missing or is not a test secret. Set PAYSTACK_SECRET_KEY in .env to an sk_test_ key.');
   if (!req.user) return apiError(res, 401, 'Please sign in before checkout.');
   const customer = validateCustomer({ name: req.user.name, email: req.user.email, phone: req.user.phone });
@@ -338,7 +349,7 @@ app.post('/api/payments/initialize', async (req, res) => {
         amount: String(priced.totalKobo),
         currency: 'NGN',
         reference,
-        callback_url: `${req.headers.origin}/payment-callback.html`,
+        callback_url: `${origin}/payment-callback.html`,
         metadata: { order_id: String(orderId), customer_name: customer.name, custom_fields: [{ display_name: 'NaijaBites Order', variable_name: 'order_id', value: String(orderId) }] }
       })
     });
