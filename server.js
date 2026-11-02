@@ -349,7 +349,7 @@ app.post('/api/payments/initialize', async (req, res) => {
         amount: String(priced.totalKobo),
         currency: 'NGN',
         reference,
-        callback_url: `${origin}/payment-callback.html`,
+        callback_url: `${origin}/NaijaBites/payment-callback.html`,
         metadata: { order_id: String(orderId), customer_name: customer.name, custom_fields: [{ display_name: 'NaijaBites Order', variable_name: 'order_id', value: String(orderId) }] }
       })
     });
